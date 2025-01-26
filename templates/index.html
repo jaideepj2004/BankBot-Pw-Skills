@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Chatbot</title>
+    <!-- Link to the CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="chat-container">
+        <h1>ABC Bank</h1>
+        <div id="chat-box" class="chat-box"></div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Ask me anything..." />
+            <button onclick="getResponse()">Ask</button>
+        </div>
+    </div>
+
+    <!-- JQuery for AJAX -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function getResponse() {
+            let userInput = $('#user-input').val();
+            if (userInput) {
+                $('#chat-box').append(`<div class="user-message">${userInput}</div>`);
+                $('#user-input').val('');
+                $.ajax({
+                    url: '/ask',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ question: userInput }),
+                    success: function(response) {
+                        $('#chat-box').append(`<div class="bot-response">${response.answer}</div>`);
+                        $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
